@@ -1,4 +1,5 @@
 import os
+import socket
 
 from flask import Flask
 
@@ -24,12 +25,36 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    # variable to store server status
+    app.config['is_locally_running'] = None
+
+    def determine_server_status():
+        global is_locally_running
+
+        # check if the hostname is localhost or 127.0.0.1
+        host_name = socket.gethostname()
+        local_addresses = ['localhost', '127.0.0.1', '::1']
+
+        if host_name in local_addresses:
+            is_locally_running = True
+            return
+        
+    # run the function before first request
+    determine_server_status()
+
+    # a simple page that returns all the api urls
+    @app.route('/api')
+    def api():
+        urls = []
+        for rule in app.url_map.iter_rules():
+            if "static" not in rule.endpoint:
+                urls.append(rule.rule)
+        return urls
 
     from . import db
     db.init_app(app)
+
+    from . import visitors
+    app.register_blueprint(visitors.bp)
 
     return app
