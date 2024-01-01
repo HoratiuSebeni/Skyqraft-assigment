@@ -56,7 +56,7 @@ def new_connection():
             'SELECT * FROM visitor_frequency WHERE ip = ? ORDER BY date DESC LIMIT 1', (ip,),
         ).fetchone()
         last_visit = result['date']
-        if (date - last_visit).total_seconds() < 600:
+        if (datetime.strptime(date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(last_visit, '%Y-%m-%d %H:%M:%S')).total_seconds() < 600:
             return "Visit within the last 10 minutes"
     
     # add a new visit for the actual IP
@@ -65,14 +65,14 @@ def new_connection():
     return "Visit recorded"
 
 # get all the visitors
-@bp.route('visitors_list', methods=('GET',))
+@bp.route('visitors_list', methods=('POST',))
 def visitors_list():
     start_date = request.json.get('start_date')
     end_date = request.json.get('end_date')
     country = request.json.get('country')
-    if start_date is None:
+    if start_date == '':
         start_date = '1900-01-01 00:00:00'
-    if end_date is None:
+    if end_date == '':
         end_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     query = """
         WITH VisitorInfo AS (
@@ -84,8 +84,8 @@ def visitors_list():
 
         SELECT v.*, vi.access_count, vi.last_registered_date
         FROM visitor v
-        LEFT JOIN VisitorInfo vi ON v.ip = vi.ip
-        WHERE (? IS NULL OR v.country = ?)
+        LEFT JOIN VisitorInfo vi ON v.ip = vi.ip    
+        WHERE (? == '' OR v.country = ?)
     """
     db = get_db()
     all_visitors = db.execute(query, (start_date, end_date, country, country)).fetchall()
@@ -99,5 +99,6 @@ def visitors_list():
             'access_count': row['access_count']
         } 
         for row in all_visitors
+        if row['access_count'] is not None
     ]
     return data
