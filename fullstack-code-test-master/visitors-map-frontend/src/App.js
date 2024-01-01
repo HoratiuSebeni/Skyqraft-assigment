@@ -1,25 +1,50 @@
-import logo from './logo.svg';
+import { React, useState, useEffect } from 'react';
 import './App.css';
+import axios from "axios";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './app/home/page.js';
 
 function App() {
+  const fetchData = async () => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: 'http://127.0.0.1:5000/new_connection',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Check if the response indicates success
+      if (response.status === 200) {
+        // Handle the response data here
+        console.log(response.data);
+
+        // Redirect only if needed
+        const url = '/home';
+        if (window.location.pathname !== url) {
+          window.location.href = url;
+        }
+      } else {
+        // Handle non-successful response
+        console.error('Error fetching data:', response.status, response.statusText);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <Routes>
+          <Route path="/home" element={<Home/>} />
+        </Routes>
+      </Router>
   );
 }
 
 export default App;
+
