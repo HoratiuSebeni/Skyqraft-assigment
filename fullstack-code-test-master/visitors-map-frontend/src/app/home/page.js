@@ -1,6 +1,9 @@
 import axios from "axios";
 import React , { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
+import FilterComponent from "../../components/filter_visitors";
+import MyMap from "../../components/map_component";
+import LineGraph from "../../components/visitors_graph";
 
 const Home = () => {
     let [data, setData] = useState(null)
@@ -68,6 +71,17 @@ const Home = () => {
 
     return (
         <div className="App-header">
+            <div className="col-12 ms-4 me-4 mt-2 row justify-content-center align-items-center">
+                <FilterComponent data={data} choosedOption={handleChoosedOption}/>
+            </div>
+            <div className="col-12 row justify-content-center align-items-center">
+                <div className="col-6">
+                    <MyMap data={data}/>
+                </div>
+                <div className="col-6">
+                    <LineGraph data={data}/>
+                </div>
+            </div>
         </div>
     );
 }
