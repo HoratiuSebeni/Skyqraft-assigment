@@ -101,3 +101,44 @@ The test will be evaluated on the following criteria:
 - Code structure
 
 ## Good luck!
+
+_______
+
+## Solution
+
+-   I implemented the frontend and the backend to get the IP of the visitors and store it in the database with the geospacial-location (country && coordonates) and register every date of the visits. 
+-   I created the posibility to filter the visitors by date and by country.
+-   I implemented a graph to show top 10 most active visitors o the websit.
+-   I implemented unit test for the backend, the frontend it was tested manually.
+-   I populated the database with fake data, but also I tested if my actual ip address is registered in real time.
+-   I used Google Maps API
+-   The backend is implemented in Flask and the frontend in React.
+
+## Requirements to run the backend:
+
+1.  Create and start environment
+2.  Install requests by running $ pip install requests.
+3.  Init database by running $ flask --app flaskr init-db.
+4.  Populate the database with fake data by running $ flask --app flaskr seed-fake-data.
+5.  Start debug server by running $ flask --app flaskr run --debug.
+
+## Requirements to run backend unit tests:
+
+1.  Start environment.
+2.  Install pytest by running $ pip install pytest coverage.
+3.  Start tests by running $ pytest.
+
+## Backend Unit Tests results:
+![Alt text](image.png)
+
+## Requirement to run frontend:
+
+1.  Install dependencies.
+2.  Start webapp by running npm start.
+
+## UI Design:
+![Alt text](image-1.png)
+
+## Fronted Tests:
+
+-   I tested manually all the frontend functionalities. 
